@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:+'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'com.google.cloud.tools.appengine'
+
+repositories {
+    maven {
+        url 'https://maven-central.storage.googleapis.com'
+    }
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.appengine:appengine-api-1.0-sdk:1.9.74'
+    compile('com.google.api-client:google-api-client:1.29.+') {
+        exclude group: 'com.google.guava'
+    }
+
+    compile 'org.jboss.resteasy:resteasy-jaxrs:3.7.+'
+    compile 'org.jboss.resteasy:resteasy-guice:3.7.+'
+    compile 'org.jboss.resteasy:resteasy-jackson2-provider:3.7.+'
+
+    compile 'com.google.inject:guice:4.2.+'
+    compile 'com.google.guava:guava:27.+'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.jukito:jukito:1.0'
+    testCompile 'org.assertj:assertj-core:3.12.+'
+    testCompile 'org.mockito:mockito-core:1.+'
+
+    testCompile 'com.google.appengine:appengine-api-labs:1.9.+'
+    testCompile 'com.google.appengine:appengine-api-stubs:1.9.+'
+    testCompile 'com.google.appengine:appengine-testing:1.9.+'
+}
+
+appengine {
+    run {
+//        jvmFlags = ['-Dappengine.fullscan.seconds=5',
+//            '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+        port = 9090
+        host = '0.0.0.0'
+    }
+
+    deploy {
+        projectId = 'goto-link'
+        stopPreviousVersion = true
+        promote = true
+    }
+}
+
+task reloadApp(type: Copy) {
+    dependsOn war
+
+    project.afterEvaluate {
+        into project.tasks.explodeWar.explodedAppDirectory
+        with war
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
