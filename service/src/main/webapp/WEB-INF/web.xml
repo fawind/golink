@@ -9,11 +9,6 @@
     <param-value>Application</param-value>
   </context-param>
 
-  <context-param>
-    <param-name>resteasy.servlet.mapping.prefix</param-name>
-    <param-value>/api</param-value>
-  </context-param>
-
   <listener>
     <listener-class>
       org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener
@@ -29,6 +24,6 @@
 
   <servlet-mapping>
     <servlet-name>Resteasy</servlet-name>
-    <url-pattern>/api/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </servlet-mapping>
 </web-app>
