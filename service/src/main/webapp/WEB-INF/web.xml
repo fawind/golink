@@ -26,4 +26,32 @@
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>api</web-resource-name>
+      <url-pattern>/api/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>frontend</web-resource-name>
+      <url-pattern>*.html</url-pattern>
+      <url-pattern>/</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>golink</web-resource-name>
+      <url-pattern>/go/*</url-pattern>
+    </web-resource-collection>
+  </security-constraint>
 </web-app>

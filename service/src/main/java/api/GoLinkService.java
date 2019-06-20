@@ -9,26 +9,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import models.GoLink;
 import models.NewGoLink;
 
-@Path("/go")
+@Path("/api/v1/golink")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface GoLinkService {
 
   @GET
-  ImmutableList<GoLink> getRedirects();
-
-  @GET
-  @Path("{alias}")
-  Response getRedirect(@PathParam("alias") String alias);
+  ImmutableList<GoLink> getGoLinks();
 
   @DELETE
   @Path("{alias}")
-  void deleteRedirect(@PathParam("alias") String alias);
+  void deleteGoLink(@PathParam("alias") String alias);
 
   @POST
-  void addRedirect(NewGoLink newGoLink);
+  void addGoLink(NewGoLink newGoLink);
 }

@@ -55,6 +55,7 @@ appengine {
         projectId = 'goto-link'
         stopPreviousVersion = true
         promote = true
+        version = '0-0-1'
     }
 }
 

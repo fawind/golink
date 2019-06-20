@@ -30,7 +30,7 @@ export class GoLink {
 }
 
 export class GoLinkService {
-  private static readonly API_ENDPOINT = '/go';
+  private static readonly API_ENDPOINT = '/api/v1/golink';
   private static readonly HEADERS = new Headers({'Content-Type': 'Application/json'});
 
   static async getGoLinks(): Promise<GoLink[]> {
