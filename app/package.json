@@ -26,6 +26,10 @@
   },
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot --host 0.0.0.0",
-    "build": "webpack --mode production"
+    "build": "npm run clean && webpack --mode production",
+    "clean": "rm -rf dist",
+    "lint": "./node_modules/.bin/tslint --project tsconfig.json",
+    "copyDist": "(cd ../service/src/main/webapp && find ./* -not -path '*WEB-INF*' -delete) && cp ./dist/* ../service/src/main/webapp/",
+    "dist": "npm run build && npm run copyDist"
   }
 }
