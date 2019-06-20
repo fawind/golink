@@ -15,7 +15,7 @@ module.exports = {
     filename: '[name].[hash].js',
   },
   resolve: {
-    alias: { '@src': PATHS.src },
+    alias: {'@src': PATHS.src},
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: ['src', 'node_modules'],
   },
@@ -50,5 +50,8 @@ module.exports = {
   ],
   devServer: {
     disableHostCheck: true,
+    proxy: {
+      '/go': 'http://localhost:9090'
+    },
   },
 };

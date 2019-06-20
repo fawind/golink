@@ -3,19 +3,18 @@ import * as ReactDOM from 'react-dom';
 
 import 'main.css';
 import {GoLinkList} from '@src/components/GoLinkList';
-import {GoLink} from '@src/GoLinkService';
 import {AddGoLink} from '@src/components/AddGoLink';
+import {GoLinkStore} from '@src/store/goLinkStore';
+import {MessageBar} from '@src/components/MessageBar';
 
-const goLinks = [
-  new GoLink('google', new URL('https://google.com'), new Date()),
-  new GoLink('fb', new URL('https://facebook.com'), new Date()),
-  new GoLink('rd', new URL('https://reddit.com'), new Date()),
-];
+const goLinkStore = new GoLinkStore();
+goLinkStore.fetchGoLinks();
 
 const app: React.ReactElement<any> = (
     <div>
-      <AddGoLink/>
-      <GoLinkList goLinks={goLinks}/>
+      <AddGoLink store={goLinkStore}/>
+      <MessageBar store={goLinkStore}/>
+      <GoLinkList store={goLinkStore}/>
     </div>
 );
 

@@ -1,6 +1,8 @@
 import * as React from 'react';
+import {GoLinkStore} from '@src/store/goLinkStore';
 
 interface Props {
+  store: GoLinkStore,
 }
 
 interface State {
@@ -26,7 +28,10 @@ export class AddGoLink extends React.Component<Props, State> {
 
   onAddButtonClick(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-    console.log(this.state);
+    this.props.store.addGoLink(this.state.aliasInput, this.state.urlInput)
+        .then(() => {
+          this.setState(INITIAL_STATE);
+        });
   }
 
   onInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -42,7 +47,7 @@ export class AddGoLink extends React.Component<Props, State> {
 
   render() {
     return (
-        <div>
+        <form>
           <input
               name="aliasInput"
               value={this.state.aliasInput}
@@ -57,8 +62,8 @@ export class AddGoLink extends React.Component<Props, State> {
               type="text"
               placeholder="Enter a url"
           />
-          <button onClick={this.onAddButtonClick} disabled={!this.hasInput()}>Add</button>
-        </div>
+          <button type="submit" onClick={this.onAddButtonClick} disabled={!this.hasInput()}>Add</button>
+        </form>
     );
   }
 }
