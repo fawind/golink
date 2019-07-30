@@ -1,10 +1,11 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class GoLink {
+public class GoLink implements Serializable {
 
   private final String alias;
   private final String url;

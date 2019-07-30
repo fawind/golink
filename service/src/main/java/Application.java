@@ -6,6 +6,11 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import exceptions.DefaultExceptionMapper;
+import java.util.Collections;
+import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.CacheFactory;
+import javax.cache.CacheManager;
 import javax.inject.Singleton;
 import resources.GoLinkResource;
 import resources.PingResource;
@@ -28,5 +33,12 @@ public class Application extends javax.ws.rs.core.Application implements Module 
   @Singleton
   public DatastoreService datastoreServiceProvider() {
     return DatastoreServiceFactory.getDatastoreService();
+  }
+
+  @Provides
+  @Singleton
+  public Cache cacheProvider() throws CacheException {
+    CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
+    return cacheFactory.createCache(Collections.emptyMap());
   }
 }

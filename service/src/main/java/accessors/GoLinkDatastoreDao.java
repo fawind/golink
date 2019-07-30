@@ -20,14 +20,20 @@ import models.GoLink;
 public class GoLinkDatastoreDao implements GoLinkDao {
 
   private final DatastoreService datastoreService;
+  private final GoLinkCache cache;
 
   @Inject
-  public GoLinkDatastoreDao(DatastoreService datastoreService) {
+  public GoLinkDatastoreDao(DatastoreService datastoreService, GoLinkCache cache) {
     this.datastoreService = datastoreService;
+    this.cache = cache;
   }
 
   @Override
   public GoLink getGoLink(String alias) throws LinkNotFoundException {
+    Optional<GoLink> cachedGoLink = cache.getGoLink(alias);
+    if (cachedGoLink.isPresent()) {
+      return cachedGoLink.get();
+    }
     Query query =
         new Query(
             DatastoreGoLinkEntity.KIND, KeyFactory.createKey(DatastoreGoLinkEntity.KIND, alias));
@@ -36,7 +42,9 @@ public class GoLinkDatastoreDao implements GoLinkDao {
       Entity entity =
           Optional.ofNullable(preparedQuery.asSingleEntity())
               .orElseThrow(() -> new LinkNotFoundException(alias));
-      return DatastoreGoLinkEntity.getGoLinkFromEntity(entity);
+      GoLink goLink = DatastoreGoLinkEntity.getGoLinkFromEntity(entity);
+      cache.addGoLink(alias, goLink);
+      return goLink;
     } catch (TooManyResultsException e) {
       throw new IllegalStateException(
           String.format("More than one entity found for key %s", alias), e);
@@ -46,9 +54,11 @@ public class GoLinkDatastoreDao implements GoLinkDao {
   @Override
   public void createGoLink(GoLink goLink) throws LinkExistsException {
     Entity entity = DatastoreGoLinkEntity.getEntityfromGoLink(goLink);
-    if (containsKey(entity.getKey())) {
+    if (cache.containsGoLink(goLink.getAlias()) || containsKey(entity.getKey())) {
       throw new LinkExistsException(goLink.getAlias());
     }
+    cache.addGoLink(goLink.getAlias(), goLink);
+    cache.clearGoLinks();
     datastoreService.put(entity);
   }
 
@@ -57,6 +67,8 @@ public class GoLinkDatastoreDao implements GoLinkDao {
     Key key = KeyFactory.createKey(DatastoreGoLinkEntity.KIND, alias);
     try {
       datastoreService.delete(key);
+      cache.clearGoLink(alias);
+      cache.clearGoLinks();
     } catch (IllegalArgumentException e) {
       throw new LinkNotFoundException(alias);
     }
@@ -64,12 +76,18 @@ public class GoLinkDatastoreDao implements GoLinkDao {
 
   @Override
   public ImmutableList<GoLink> getGoLinks() {
+    Optional<ImmutableList<GoLink>> cachedGoLinks = cache.getGoLinks();
+    if (cachedGoLinks.isPresent()) {
+      return cachedGoLinks.get();
+    }
     Query query = new Query(DatastoreGoLinkEntity.KIND);
     PreparedQuery preparedQuery = datastoreService.prepare(query);
-    return Streams.stream(preparedQuery.asIterable())
+    ImmutableList<GoLink> goLinks = Streams.stream(preparedQuery.asIterable())
         .map(DatastoreGoLinkEntity::getGoLinkFromEntity)
         .sorted(Comparator.comparing(GoLink::getAlias))
         .collect(ImmutableList.toImmutableList());
+    cache.setGoLinks(goLinks);
+    return goLinks;
   }
 
   private boolean containsKey(Key key) {

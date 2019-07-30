@@ -51,7 +51,7 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
     proxy: {
-      '/go': 'http://localhost:9090'
+      '/api': 'http://localhost:9090'
     },
   },
 };
