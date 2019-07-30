@@ -27,6 +27,18 @@
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
+  <!-- Enforce https everywhere -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>https</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <!-- All API resources are only accessible by the admin -->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>api</web-resource-name>
@@ -35,8 +47,12 @@
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
   </security-constraint>
 
+  <!-- The frontend is only accessible by the admin -->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>frontend</web-resource-name>
@@ -46,12 +62,19 @@
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
   </security-constraint>
 
+  <!-- Go links are publicly accessible -->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>golink</web-resource-name>
       <url-pattern>/go/*</url-pattern>
     </web-resource-collection>
   </security-constraint>
+  <user-data-constraint>
+    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+  </user-data-constraint>
 </web-app>
