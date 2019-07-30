@@ -13,5 +13,10 @@ export const GoLinkList: React.FunctionComponent<Props> = observer((props: Props
     const onDelete = props.store.deleteGoLink.bind(props.store, goLink);
     return <GoLinkItem key={goLink.alias} goLink={goLink} onDelete={onDelete}/>;
   });
-  return <ul>{goLinkElems}</ul>;
+  return (
+      <div>
+        {props.store.isLoading && <span>Loading...</span>}
+        <ul>{goLinkElems}</ul>
+      </div>
+  );
 });
